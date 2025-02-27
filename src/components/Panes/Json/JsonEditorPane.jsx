@@ -44,7 +44,8 @@ export default function JsonEditorPanel({
     return () => {
       view.destroy();
     };
-  }, [paneValue, setPaneValue, isEditable]); // Include dependencies
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     const view = viewRef.current;
