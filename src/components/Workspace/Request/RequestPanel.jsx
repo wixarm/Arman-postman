@@ -14,9 +14,7 @@ const keyPairInitState = [
 ];
 
 export default function Request({ setResponse, setLoading, loading }) {
-  const [url, setUrl] = useState(
-    "https://jsonplaceholder.typicode.com/todos/1"
-  );
+  const [url, setUrl] = useState("http://localhost:3000/");
   const [reqMethod, setReqMethod] = useState("GET");
   const [queryParams, setQueryParams] = useState(keyPairInitState);
   const [headers, setHeaders] = useState(keyPairInitState);
@@ -31,6 +29,7 @@ export default function Request({ setResponse, setLoading, loading }) {
   const handleSelectRequest = (e) => {
     const selectedId = e.target.value;
     const selectedRequest = savedRequests.find((req) => req.id === selectedId);
+    console.log("dsidso", selectedRequest.body);
     if (selectedRequest) {
       setUrl(selectedRequest.url);
       setReqMethod(selectedRequest.method);
@@ -57,6 +56,7 @@ export default function Request({ setResponse, setLoading, loading }) {
       console.log("headers", headers);
       console.log("query params", queryParams);
       console.log("body", requestBody);
+      console.log("dsijdms", requestBody);
 
       let data;
       try {
