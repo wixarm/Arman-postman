@@ -119,7 +119,7 @@ function UrlEditor({
 
   return (
     <div>
-      <form className="flex">
+      <form className="flex" onSubmit={handleSend}>
         <select
           className="px-4 py-2 border rounded-md border-gray-300 hover:border-orange-500 focus:outline-none bg-gray-100"
           value={reqMethod}
