@@ -23,8 +23,29 @@ function UrlEditor({
   const handleSend = (e) => {
     onInputSend(e);
 
-    const requestId = crypto.randomUUID();
     const existingRequests = JSON.parse(localStorage.getItem("requests")) || [];
+
+    // Extract base URL without query parameters
+    const getBaseUrl = (fullUrl) => {
+      try {
+        const urlObj = new URL(fullUrl);
+        return `${urlObj.origin}${urlObj.pathname}`;
+      } catch {
+        return fullUrl.split("?")[0]; // Fallback if URL is invalid
+      }
+    };
+
+    const baseUrl = getBaseUrl(url);
+
+    // Find if a similar request exists (same method and base URL)
+    const requestIndex = existingRequests.findIndex(
+      (req) => req.method === reqMethod && getBaseUrl(req.url) === baseUrl
+    );
+
+    const requestId =
+      requestIndex !== -1
+        ? existingRequests[requestIndex].id
+        : crypto.randomUUID();
 
     const newRequest = {
       id: requestId,
@@ -32,10 +53,6 @@ function UrlEditor({
       method: reqMethod,
       body,
     };
-
-    const requestIndex = existingRequests.findIndex(
-      (req) => req.url === newRequest.url
-    );
 
     if (requestIndex !== -1) {
       existingRequests[requestIndex] = newRequest;
@@ -71,11 +88,10 @@ function UrlEditor({
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      const fileContent = event.target.result; // Read the file content
+      const fileContent = event.target.result;
       const requests = [];
 
-      // Parse the file content into individual requests
-      const requestBlocks = fileContent.split("\n\n"); // Split by double newlines
+      const requestBlocks = fileContent.split("\n\n");
       requestBlocks.forEach((block) => {
         const lines = block.split("\n");
         const request = {};
@@ -90,9 +106,9 @@ function UrlEditor({
             request.method = line.split(": ")[1];
           } else if (line.startsWith("Body:")) {
             isBody = true;
-            bodyLines.push(line.split(": ")[1]); // Start capturing body lines
+            bodyLines.push(line.split(": ")[1]);
           } else if (isBody) {
-            bodyLines.push(line); // Continue capturing body lines
+            bodyLines.push(line);
           }
         });
 
